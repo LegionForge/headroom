@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__obsidian__view",
+      "Bash(cargo build *)",
+      "Bash(cmd *)",
+      "mcp__obsidian__create",
+      "mcp__obsidian__str_replace",
+      "PowerShell(cargo run *)",
+      "Bash(ollama ls *)",
+      "Bash(where ollama *)"
+    ]
+  }
+}
