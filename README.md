@@ -28,9 +28,10 @@ See [Windows Memory Metrics](#windows-memory-metrics) below for the full breakdo
 
 ### Requirements
 
-- **Windows 10/11** (primary platform)
+- **Windows 10/11** (currently the only supported platform)
 - **Rust 1.70+** ([rustup.rs](https://rustup.rs))
-- Linux and macOS supported via inline platform-specific code (`#[cfg]`)
+
+**macOS and Linux:** Architecture is ready for cross-platform implementation (inline `#[cfg]` blocks per collector), but OS-specific implementations haven't been added yet. See [Planned Features](#planned-features) for the roadmap.
 
 ### Build
 
@@ -154,11 +155,10 @@ cargo test -- --nocapture    # show println output
 4. **AI analysis latency:**
    - Run `headroom --snapshot --ai` and measure response time (should be < 5s for Claude)
 
-### Cross-Platform Build Check
+### Linting
 
 ```bash
-# Verify Linux/macOS compilation (no binary produced, only check syntax)
-cargo build --target x86_64-unknown-linux-gnu --no-default-features
+cargo clippy -- -D warnings   # fail on all clippy warnings
 ```
 
 ---
@@ -205,7 +205,12 @@ src/
 
 ## Planned Features (v0.2+)
 
-- [ ] Per-pagefile detail: `NtQuerySystemInformation(SystemPagingFileInformation)` for C: vs D: breakdown
+### Platform Support (v0.2–v0.3)
+- [ ] macOS: memory metrics via `host_statistics64()` and `getpagesize()`
+- [ ] Linux: memory metrics via `/proc/meminfo`, `/proc/vmstat`, and `sysinfo()`
+
+### Diagnostics (v0.2+)
+- [ ] Per-pagefile detail: `NtQuerySystemInformation(SystemPagingFileInformation)` for C: vs D: breakdown (Windows)
 - [ ] Hard fault rate: track PageFaultCount diff between snapshots to measure swap thrashing
 - [ ] MCP server mode: expose collectors as Model Context Protocol tools
 - [ ] Persistent metrics: SQLite or CSV logging for trend analysis
