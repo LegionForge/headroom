@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  lint:
+    uses: LegionForge/dev-rig/.github/workflows/rust-lint.yml@main
+
+  test:
+    uses: LegionForge/dev-rig/.github/workflows/rust-test.yml@main
+
+  audit:
+    uses: LegionForge/dev-rig/.github/workflows/rust-audit.yml@main
+
+  secrets:
+    uses: LegionForge/dev-rig/.github/workflows/secrets.yml@main
+    permissions:
+      contents: read
+
+  sbom:
+    uses: LegionForge/dev-rig/.github/workflows/rust-sbom.yml@main
