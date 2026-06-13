@@ -23,3 +23,9 @@ jobs:
 
   sbom:
     uses: LegionForge/dev-rig/.github/workflows/rust-sbom.yml@main
+
+  trivy:
+    uses: LegionForge/dev-rig/.github/workflows/trivy.yml@main
+    permissions:
+      security-events: write
+      contents: read
