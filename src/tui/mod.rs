@@ -9,7 +9,10 @@ use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Line, Span},
-    widgets::{Block, Borders, Gauge, Paragraph, Row, Scrollbar, ScrollbarOrientation, ScrollbarState, Table, Wrap},
+    widgets::{
+        Block, Borders, Gauge, Paragraph, Row, Scrollbar, ScrollbarOrientation, ScrollbarState,
+        Table, Wrap,
+    },
     Frame, Terminal,
 };
 use std::{
@@ -79,7 +82,8 @@ async fn event_loop(
         if event::poll(poll_timeout)? {
             if let Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
-                    let ai_has_content = matches!(app.ai_state, AiState::Done(_) | AiState::Error(_));
+                    let ai_has_content =
+                        matches!(app.ai_state, AiState::Done(_) | AiState::Error(_));
                     match key.code {
                         KeyCode::Char('q') | KeyCode::Esc => break,
                         KeyCode::Char('r') => {
@@ -135,11 +139,11 @@ fn draw(f: &mut Frame, app: &App) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Length(7),              // memory
-            Constraint::Length(4),              // pagefile
-            Constraint::Min(6),                 // processes
-            Constraint::Length(ai_height),      // ai pane (collapsed when idle)
-            Constraint::Length(1),              // help bar
+            Constraint::Length(7),         // memory
+            Constraint::Length(4),         // pagefile
+            Constraint::Min(6),            // processes
+            Constraint::Length(ai_height), // ai pane (collapsed when idle)
+            Constraint::Length(1),         // help bar
         ])
         .split(f.area());
 
@@ -154,17 +158,25 @@ fn draw(f: &mut Frame, app: &App) {
     let scrollable = matches!(app.ai_state, AiState::Done(_) | AiState::Error(_));
     let help = Paragraph::new(Line::from(if scrollable {
         vec![
-            key_span("r"), Span::raw("refresh  "),
-            key_span("a"), Span::raw("AI  "),
-            key_span("↑↓"), Span::raw("scroll  "),
-            key_span("PgUp/Dn"), Span::raw("fast scroll  "),
-            key_span("q"), Span::raw("quit"),
+            key_span("r"),
+            Span::raw("refresh  "),
+            key_span("a"),
+            Span::raw("AI  "),
+            key_span("↑↓"),
+            Span::raw("scroll  "),
+            key_span("PgUp/Dn"),
+            Span::raw("fast scroll  "),
+            key_span("q"),
+            Span::raw("quit"),
         ]
     } else {
         vec![
-            key_span("r"), Span::raw("refresh  "),
-            key_span("a"), Span::raw("AI analysis  "),
-            key_span("q"), Span::raw("quit"),
+            key_span("r"),
+            Span::raw("refresh  "),
+            key_span("a"),
+            Span::raw("AI analysis  "),
+            key_span("q"),
+            Span::raw("quit"),
         ]
     }));
     f.render_widget(help, chunks[4]);
@@ -240,7 +252,9 @@ fn draw_memory(f: &mut Frame, snap: &SystemSnapshot, area: Rect) {
 
 fn draw_paging(f: &mut Frame, snap: &SystemSnapshot, area: Rect) {
     let paging = &snap.paging;
-    let block = Block::default().title(" Pagefile / Swap ").borders(Borders::ALL);
+    let block = Block::default()
+        .title(" Pagefile / Swap ")
+        .borders(Borders::ALL);
     let inner = block.inner(area);
     f.render_widget(block, area);
 
@@ -324,11 +338,7 @@ fn draw_ai(f: &mut Frame, state: &AiState, scroll: u16, area: Rect) {
             "Waiting on AI response...".into(),
             Style::default().fg(Color::Yellow),
         ),
-        AiState::Done(text) => (
-            " AI Analysis ",
-            text.clone(),
-            Style::default(),
-        ),
+        AiState::Done(text) => (" AI Analysis ", text.clone(), Style::default()),
         AiState::Error(e) => (
             " AI Analysis — error ",
             format!("Error: {e}"),
@@ -346,7 +356,10 @@ fn draw_ai(f: &mut Frame, state: &AiState, scroll: u16, area: Rect) {
     let visible_lines = inner.height as usize;
     let total_lines = count_wrapped_lines(&content, text_width);
 
-    let text_area = Rect { width: inner.width.saturating_sub(1), ..inner };
+    let text_area = Rect {
+        width: inner.width.saturating_sub(1),
+        ..inner
+    };
 
     f.render_widget(
         Paragraph::new(content)
@@ -358,8 +371,7 @@ fn draw_ai(f: &mut Frame, state: &AiState, scroll: u16, area: Rect) {
 
     // Only draw the scrollbar when content overflows the pane.
     if total_lines > visible_lines {
-        let mut sb_state = ScrollbarState::new(total_lines)
-            .position(scroll as usize);
+        let mut sb_state = ScrollbarState::new(total_lines).position(scroll as usize);
         f.render_stateful_widget(
             Scrollbar::new(ScrollbarOrientation::VerticalRight)
                 .begin_symbol(Some("↑"))
@@ -389,9 +401,13 @@ fn count_wrapped_lines(text: &str, width: usize) -> usize {
 }
 
 fn ratio_color(ratio: f64) -> Color {
-    if ratio > 0.85 { Color::Red }
-    else if ratio > 0.70 { Color::Yellow }
-    else { Color::Green }
+    if ratio > 0.85 {
+        Color::Red
+    } else if ratio > 0.70 {
+        Color::Yellow
+    } else {
+        Color::Green
+    }
 }
 
 fn key_span(key: &str) -> Span<'_> {
