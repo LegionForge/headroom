@@ -1,5 +1,6 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
+use std::cmp::Reverse;
 use sysinfo::{ProcessesToUpdate, System};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -31,7 +32,7 @@ pub fn collect_top(n: usize) -> Result<Vec<ProcessSnapshot>> {
         })
         .collect();
 
-    procs.sort_by(|a, b| b.memory_bytes.cmp(&a.memory_bytes));
+    procs.sort_by_key(|b| Reverse(b.memory_bytes));
     procs.truncate(n);
     Ok(procs)
 }

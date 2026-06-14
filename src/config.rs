@@ -94,11 +94,15 @@ impl Default for AiConfig {
 
 impl AiConfig {
     pub fn resolved_base_url(&self) -> &str {
-        self.base_url.as_deref().unwrap_or(self.provider.default_base_url())
+        self.base_url
+            .as_deref()
+            .unwrap_or(self.provider.default_base_url())
     }
 
     pub fn resolved_model(&self) -> &str {
-        self.model.as_deref().unwrap_or(self.provider.default_model())
+        self.model
+            .as_deref()
+            .unwrap_or(self.provider.default_model())
     }
 }
 
@@ -123,7 +127,9 @@ pub struct DriveInfo {
 
 // ── Config loading ────────────────────────────────────────────────────────────
 
-fn default_interval() -> u64 { 2 }
+fn default_interval() -> u64 {
+    2
+}
 
 impl Default for Config {
     fn default() -> Self {
@@ -151,7 +157,10 @@ impl Config {
             }
             Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(Self::default()),
             Err(e) => {
-                eprintln!("Warning: cannot read config at {}: {e} — using defaults", path.display());
+                eprintln!(
+                    "Warning: cannot read config at {}: {e} — using defaults",
+                    path.display()
+                );
                 Ok(Self::default())
             }
         }
@@ -173,8 +182,7 @@ fn config_path() -> PathBuf {
     let base = PathBuf::from(std::env::var("APPDATA").unwrap_or_else(|_| ".".into()));
 
     #[cfg(not(target_os = "windows"))]
-    let base = PathBuf::from(std::env::var("HOME").unwrap_or_else(|_| ".".into()))
-        .join(".config");
+    let base = PathBuf::from(std::env::var("HOME").unwrap_or_else(|_| ".".into())).join(".config");
 
     base.join("headroom").join("config.toml")
 }

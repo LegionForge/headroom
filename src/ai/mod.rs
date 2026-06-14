@@ -19,9 +19,11 @@ pub async fn get_recommendations(snap: &SystemSnapshot, cfg: &Config) -> Result<
 // ── Anthropic Claude ──────────────────────────────────────────────────────────
 
 async fn claude_request(prompt: &str, cfg: &Config) -> Result<String> {
-    let api_key = cfg.ai.api_key.as_deref().context(
-        "No API key. Set ANTHROPIC_API_KEY in env or ai.api_key in config.toml.",
-    )?;
+    let api_key = cfg
+        .ai
+        .api_key
+        .as_deref()
+        .context("No API key. Set ANTHROPIC_API_KEY in env or ai.api_key in config.toml.")?;
 
     let client = Client::new();
     let resp = client
@@ -44,7 +46,10 @@ async fn claude_request(prompt: &str, cfg: &Config) -> Result<String> {
         anyhow::bail!("Claude API error {status}: {body}");
     }
 
-    let body: serde_json::Value = resp.json().await.context("Failed to parse Claude response")?;
+    let body: serde_json::Value = resp
+        .json()
+        .await
+        .context("Failed to parse Claude response")?;
     Ok(body["content"][0]["text"]
         .as_str()
         .unwrap_or("No response text")
@@ -98,7 +103,11 @@ async fn openai_compat_request(prompt: &str, cfg: &Config) -> Result<String> {
     let content = msg["content"].as_str().unwrap_or("");
     let reasoning = msg["reasoning_content"].as_str().unwrap_or("");
 
-    let raw = if !content.is_empty() { content } else { reasoning };
+    let raw = if !content.is_empty() {
+        content
+    } else {
+        reasoning
+    };
     let result = strip_thinking(raw);
 
     if result.is_empty() {
@@ -183,9 +192,17 @@ Top 10 processes by physical working set:
 
 Key observation: committed ({committed:.1} GB) vs physical in use ({phys_used:.1} GB).
 Gap of {gap:.1} GB = virtual address space reserved but not backed by RAM or pagefile."#,
-        cpu = if profile.cpu.is_empty() { "unspecified".into() } else { profile.cpu.clone() },
+        cpu = if profile.cpu.is_empty() {
+            "unspecified".into()
+        } else {
+            profile.cpu.clone()
+        },
         ram_gb = profile.ram_gb,
-        gpu = if profile.gpu.is_empty() { "unspecified".into() } else { profile.gpu.clone() },
+        gpu = if profile.gpu.is_empty() {
+            "unspecified".into()
+        } else {
+            profile.gpu.clone()
+        },
         uses = if profile.use_cases.is_empty() {
             "development, gaming, media".into()
         } else {
@@ -214,8 +231,13 @@ pub fn fmt_bytes(bytes: u64) -> String {
     const GB: f64 = 1_073_741_824.0;
     const MB: f64 = 1_048_576.0;
     let b = bytes as f64;
-    if b >= TB      { format!("{:.1}T", b / TB) }
-    else if b >= GB { format!("{:.1}G", b / GB) }
-    else if b >= MB { format!("{:.0}M", b / MB) }
-    else            { format!("{:.0}K", b / 1024.0) }
+    if b >= TB {
+        format!("{:.1}T", b / TB)
+    } else if b >= GB {
+        format!("{:.1}G", b / GB)
+    } else if b >= MB {
+        format!("{:.0}M", b / MB)
+    } else {
+        format!("{:.0}K", b / 1024.0)
+    }
 }

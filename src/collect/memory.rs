@@ -25,12 +25,16 @@ pub struct MemorySnapshot {
 
 impl MemorySnapshot {
     pub fn commit_ratio(&self) -> f64 {
-        if self.commit_limit_bytes == 0 { return 0.0; }
+        if self.commit_limit_bytes == 0 {
+            return 0.0;
+        }
         self.committed_bytes as f64 / self.commit_limit_bytes as f64
     }
 
     pub fn physical_ratio(&self) -> f64 {
-        if self.total_bytes == 0 { return 0.0; }
+        if self.total_bytes == 0 {
+            return 0.0;
+        }
         self.used_bytes as f64 / self.total_bytes as f64
     }
 }
@@ -77,7 +81,9 @@ fn collect_impl() -> Result<MemorySnapshot> {
 
     for line in content.lines() {
         if let Some((key, val)) = line.split_once(':') {
-            let kb: u64 = val.split_whitespace().next()
+            let kb: u64 = val
+                .split_whitespace()
+                .next()
                 .and_then(|v| v.parse().ok())
                 .unwrap_or(0);
             map.insert(key.trim(), kb * 1024);

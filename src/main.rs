@@ -7,7 +7,10 @@ use anyhow::Result;
 use clap::Parser;
 
 #[derive(Parser, Debug)]
-#[command(name = "headroom", about = "System stability monitor — memory, paging, commit pressure")]
+#[command(
+    name = "headroom",
+    about = "System stability monitor — memory, paging, commit pressure"
+)]
 struct Args {
     /// Print a one-shot JSON snapshot and exit (no TUI)
     #[arg(long)]
