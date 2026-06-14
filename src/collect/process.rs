@@ -1,6 +1,6 @@
-use std::cmp::Reverse;
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
+use std::cmp::Reverse;
 use sysinfo::{ProcessesToUpdate, System};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
