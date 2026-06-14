@@ -393,7 +393,7 @@ fn count_wrapped_lines(text: &str, width: usize) -> usize {
             if line.is_empty() {
                 1
             } else {
-                (line.chars().count() + width - 1) / width
+                line.chars().count().div_ceil(width)
             }
         })
         .sum::<usize>()
