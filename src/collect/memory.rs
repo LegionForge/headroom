@@ -49,9 +49,18 @@ pub fn collect() -> Result<MemorySnapshot> {
 fn collect_impl() -> Result<MemorySnapshot> {
     use windows::Win32::System::ProcessStatus::{GetPerformanceInfo, PERFORMANCE_INFORMATION};
 
-    let mut pi: PERFORMANCE_INFORMATION = unsafe { std::mem::zeroed() };
+    // SAFETY: PERFORMANCE_INFORMATION is a plain Win32 struct of fixed-size
+    // integer fields (u32/usize) with no pointers or niche invariants, so an
+    // all-zero bit pattern is a valid value. `cb` is set to the struct's
+    // real size immediately after, as GetPerformanceInfo requires for its
+    // own size validation.
+    let mut pi: PERFORMANCE_INFORMATION = unsafe { std::mem::zeroed() }; // nosemgrep: rust.lang.security.unsafe-usage.unsafe-usage -- zero-init a Win32 FFI struct before GetPerformanceInfo fills it in; see SAFETY comment above
     pi.cb = std::mem::size_of::<PERFORMANCE_INFORMATION>() as u32;
-    unsafe { GetPerformanceInfo(&mut pi, pi.cb)? };
+    // SAFETY: `pi` is a valid, correctly-sized PERFORMANCE_INFORMATION (see
+    // above) and `&mut pi` is a unique, properly-aligned pointer for the
+    // duration of this call, matching GetPerformanceInfo's documented
+    // contract (https://learn.microsoft.com/windows/win32/api/psapi/nf-psapi-getperformanceinfo).
+    unsafe { GetPerformanceInfo(&mut pi, pi.cb)? }; // nosemgrep: rust.lang.security.unsafe-usage.unsafe-usage -- calling a Win32 API is inherently unsafe FFI; standard `windows` crate idiom, see SAFETY comment above
 
     let page = pi.PageSize as u64;
     let total = pi.PhysicalTotal as u64 * page;
