@@ -8,13 +8,13 @@ on:
 
 jobs:
   lint:
-    uses: LegionForge/dev-rig/.github/workflows/rust-lint.yml@ddbe4eaed79711eab4ad741403c0a550232fd0fe
+    uses: LegionForge/dev-rig/.github/workflows/rust-lint.yml@250a13837b7648ae678226a5ea953e92b3d2c4cc
 
   test:
-    uses: LegionForge/dev-rig/.github/workflows/rust-test.yml@ddbe4eaed79711eab4ad741403c0a550232fd0fe
+    uses: LegionForge/dev-rig/.github/workflows/rust-test.yml@250a13837b7648ae678226a5ea953e92b3d2c4cc
 
   sast:
-    uses: LegionForge/dev-rig/.github/workflows/rust-sast.yml@ddbe4eaed79711eab4ad741403c0a550232fd0fe
+    uses: LegionForge/dev-rig/.github/workflows/rust-sast.yml@250a13837b7648ae678226a5ea953e92b3d2c4cc
     with:
       source-dirs: "src"
     permissions:
@@ -23,18 +23,18 @@ jobs:
       actions: read       # required by the nested codeql job
 
   audit:
-    uses: LegionForge/dev-rig/.github/workflows/rust-audit.yml@ddbe4eaed79711eab4ad741403c0a550232fd0fe
+    uses: LegionForge/dev-rig/.github/workflows/rust-audit.yml@250a13837b7648ae678226a5ea953e92b3d2c4cc
 
   secrets:
-    uses: LegionForge/dev-rig/.github/workflows/secrets.yml@ddbe4eaed79711eab4ad741403c0a550232fd0fe
+    uses: LegionForge/dev-rig/.github/workflows/secrets.yml@250a13837b7648ae678226a5ea953e92b3d2c4cc
     permissions:
       contents: read
 
   sbom:
-    uses: LegionForge/dev-rig/.github/workflows/rust-sbom.yml@ddbe4eaed79711eab4ad741403c0a550232fd0fe
+    uses: LegionForge/dev-rig/.github/workflows/rust-sbom.yml@250a13837b7648ae678226a5ea953e92b3d2c4cc
 
   trivy:
-    uses: LegionForge/dev-rig/.github/workflows/trivy.yml@ddbe4eaed79711eab4ad741403c0a550232fd0fe
+    uses: LegionForge/dev-rig/.github/workflows/trivy.yml@250a13837b7648ae678226a5ea953e92b3d2c4cc
     permissions:
       security-events: write
       contents: read
