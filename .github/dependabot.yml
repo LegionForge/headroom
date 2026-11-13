@@ -28,6 +28,11 @@ updates:
       time: "04:00"
     allow:
       - dependency-type: "all"
+    groups:
+      cargo-patch-minor:
+        update-types:
+          - "minor"
+          - "patch"
     reviewers:
       - "jp-cruz"
     assignees:
